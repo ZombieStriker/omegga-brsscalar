@@ -88,6 +88,9 @@ public class UpscaleRequest {
             double xs = (brick.getSize().x * scalex);
             double ys = (brick.getSize().y * scaley);
             double zs = (brick.getSize().z * scalez);
+            double xsa = xs;
+            double ysa = ys;
+            double zsa = zs;
             if (
                     (scalex < 1 && xs < 1) ||
                             (scaley < 1 && ys < 1) ||
@@ -97,12 +100,12 @@ public class UpscaleRequest {
                 brickindex++;
                 continue;
             }
-            if (xs < 0)
-                xs = -xs;
-            if (ys < 0)
-                ys = -ys;
-            if (zs < 0)
-                zs = -zs;
+            if (xsa < 0)
+                xsa = -xsa;
+            if (ysa < 0)
+                ysa = -ysa;
+            if (zsa < 0)
+                zsa = -zsa;
 
             String brickname = source.getBrickAssets().get(brick.getAssetNameIndex());
             boolean scale = false;
@@ -121,6 +124,10 @@ public class UpscaleRequest {
                 int bricksx = 1;
                 int bricksy = 1;
                 int bricksz = 1;
+
+                int bricksxa = 1;
+                int bricksya = 1;
+                int bricksza = 1;
                 if (brickname.equals("PB_DefaultBrick") || (!brickname.toLowerCase().contains("micro"))) {
                     bricksx = (int) ((xs + 999) / 1000);
                     if (bricksx < 1)
@@ -131,6 +138,16 @@ public class UpscaleRequest {
                     bricksz = (int) ((zs + 999) / 1000);
                     if (bricksz < 1)
                         bricksz = 1;
+
+                    bricksxa = (int) ((xsa + 999) / 1000);
+                    if (bricksxa < 1)
+                        bricksxa = 1;
+                    bricksya = (int) ((ysa + 999) / 1000);
+                    if (bricksya < 1)
+                        bricksya = 1;
+                    bricksza = (int) ((zsa + 999) / 1000);
+                    if (bricksza < 1)
+                        bricksza = 1;
                 } else {
                     bricksx = (int) ((xs + 499) / 500);
                     if (bricksx < 1)
@@ -141,22 +158,36 @@ public class UpscaleRequest {
                     bricksz = (int) ((zs + 499) / 500);
                     if (bricksz < 1)
                         bricksz = 1;
+
+
+                    bricksxa = (int) ((xsa + 499) / 500);
+                    if (bricksxa < 1)
+                        bricksxa = 1;
+                    bricksya = (int) ((ysa + 499) / 500);
+                    if (bricksya < 1)
+                        bricksya = 1;
+                    bricksza = (int) ((zsa + 499) / 500);
+                    if (bricksza < 1)
+                        bricksza = 1;
                 }
 
                 try {
-                    for (double xx = 1; xx < bricksx + 1; xx++) {
-                        for (double yy = 1; yy < bricksy + 1; yy++) {
-                            for (double zz = 1; zz < bricksz + 1; zz++) {
+                    for (double xx = 1; xx < bricksxa + 1; xx++) {
+                        for (double yy = 1; yy < bricksya + 1; yy++) {
+                            for (double zz = 1; zz < bricksza + 1; zz++) {
                                 Brick brick1 = brick.clone();
                                 int xsi = (int) (xs / bricksx);
                                 int ysi = (int) (ys / bricksy);
                                 int zsi = (int) (zs / bricksz);
+                                int xsia = (int) (xsa / bricksxa);
+                                int ysia = (int) (ysa / bricksya);
+                                int zsia = (int) (zsa / bricksza);
                                // JOmegga.broadcast(xsi+" "+ysi+" "+zsi);
-                                brick1.setSize(xsi, ysi, zsi);
+                                brick1.setSize(xsia, ysia, zsia);
 
-                                int xxp =(int) ((xx*brick.getPosition().x)+(xx*2*xsi));
-                                int yyp = (int)((yy*brick.getPosition().y)+(yy*2*ysi));
-                                int zzp = (int)((zz*brick.getPosition().z)+(zz*2*zsi));
+                                int xxp =(int) ((brick.getPosition().x)+(xx*2*xsi));
+                                int yyp = (int)((brick.getPosition().y)+(yy*2*ysi));
+                                int zzp = (int)((brick.getPosition().z)+(zz*2*zsi));
                                 brick1.setPosition(xxp, yyp, zzp);
                                 JOmegga.broadcast(xxp+" "+yyp+" "+zzp);
                                 output.getBricks().add(brick1);
