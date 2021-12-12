@@ -129,13 +129,13 @@ public class UpscaleRequest {
                 int bricksya = 1;
                 int bricksza = 1;
                 if (brickname.equals("PB_DefaultBrick") || (!brickname.toLowerCase().contains("micro"))) {
-                    bricksx = (int) ((xs + 999) / 1000);
+                    bricksx = (int) ((xs + (xs < 0 ? -999:999)) / 1000);
                     if (bricksx < 1)
                         bricksx = 1;
-                    bricksy = (int) ((ys + 999) / 1000);
+                    bricksy = (int) ((ys+ (ys < 0 ? -999:999)) / 1000);
                     if (bricksy < 1)
                         bricksy = 1;
-                    bricksz = (int) ((zs + 999) / 1000);
+                    bricksz = (int) ((zs+ (zs < 0 ? -999:999)) / 1000);
                     if (bricksz < 1)
                         bricksz = 1;
 
@@ -149,13 +149,13 @@ public class UpscaleRequest {
                     if (bricksza < 1)
                         bricksza = 1;
                 } else {
-                    bricksx = (int) ((xs + 499) / 500);
+                    bricksx = (int) ((xs + (xs < 0 ? -499:499)) / 500);
                     if (bricksx < 1)
                         bricksx = 1;
-                    bricksy = (int) ((ys + 499) / 500);
+                    bricksy = (int) ((ys + (ys < 0 ? -499:499)) / 500);
                     if (bricksy < 1)
                         bricksy = 1;
-                    bricksz = (int) ((zs + 499) / 500);
+                    bricksz = (int) ((zs + (zs < 0 ? -499:499)) / 500);
                     if (bricksz < 1)
                         bricksz = 1;
 
@@ -174,7 +174,13 @@ public class UpscaleRequest {
                 try {
                     for (double xx = 1; xx < bricksxa + 1; xx++) {
                         for (double yy = 1; yy < bricksya + 1; yy++) {
-                            for (double zz = 1; zz < bricksza + 1; zz++) {
+                            for(double zz = 1; zz < bricksza + 1; zz++) {
+                               if(xx != 1 && xx != bricksxa &&
+                                       yy != 1 && yy != bricksya &&
+                                       zz != 1 && zz != bricksza
+                               )
+                                   continue;
+
                                 Brick brick1 = brick.clone();
                                 int xsi = (int) (xs / bricksx);
                                 int ysi = (int) (ys / bricksy);
@@ -185,8 +191,8 @@ public class UpscaleRequest {
                                // JOmegga.broadcast(xsi+" "+ysi+" "+zsi);
                                 brick1.setSize(xsia, ysia, zsia);
 
-                                int xxp =(int) ((brick.getPosition().x)+(xx*2*xsi));
-                                int yyp = (int)((brick.getPosition().y)+(yy*2*ysi));
+                                int xxp =(int) ((brick.getPosition().x)+((xx*2*xsi) * (brick.getPosition().x<0?-1:1)));
+                                int yyp = (int)((brick.getPosition().y)+((yy*2*ysi) * (brick.getPosition().y<0?-1:1)));
                                 int zzp = (int)((brick.getPosition().z)+(zz*2*zsi));
                                 brick1.setPosition(xxp, yyp, zzp);
                                 JOmegga.broadcast(xxp+" "+yyp+" "+zzp);
